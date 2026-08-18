@@ -1,6 +1,8 @@
 AddDefaultCharset UTF-8
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # --------------------------------------------------
     # Allow index.php
@@ -25,5 +27,7 @@ AddDefaultCharset UTF-8
     # --------------------------------------------------
     # Route all requests through public/index.php
     RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ public/$1 [L,QSA]
 </IfModule>
