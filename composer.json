@@ -1,0 +1,12 @@
+{
+  "name": "labergue-januar-lavalust",
+  "description": "LavaLust PHP MVC Framework with Student Portal",
+  "keywords": ["php", "mvc", "framework", "lavalust"],
+  "repository": "https://github.com/jhaeylabergue/labergue-januar-lavalust",
+  "require": {
+    "php": "^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  }
+}
