@@ -1,4 +1,11 @@
-<?php defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
+<?php
+/**
+ * @var array  $student
+ * @var string $page_title
+ * @var string $active_page
+ * @var bool   $has_access
+ */
+ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

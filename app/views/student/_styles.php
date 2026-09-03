@@ -212,4 +212,34 @@
         line-height: 1.7;
         margin-top: 0.5rem;
     }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        text-align: left;
+        padding: 0.75rem 0.85rem;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    .data-table th {
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+    }
+
+    .data-table tbody tr:hover {
+        background: rgba(56, 189, 248, 0.06);
+    }
 </style>

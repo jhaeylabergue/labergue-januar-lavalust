@@ -268,6 +268,13 @@ class Database {
             PDO::ATTR_EMULATE_PREPARES   => false,
         );
 
+        $ssl_ca = isset($database_config['ssl_ca']) ? trim((string) $database_config['ssl_ca']) : '';
+        if ($driver === 'mysql' && $ssl_ca !== '' && is_readable($ssl_ca)) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
+            $ssl_verify = $database_config['ssl_verify'] ?? true;
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = filter_var($ssl_verify, FILTER_VALIDATE_BOOLEAN);
+        }
+
         try {
             $this->db = new PDO($dsn, $username, $password, $options);
             $this->driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
