@@ -269,6 +269,9 @@ class Database {
         );
 
         $ssl_ca = isset($database_config['ssl_ca']) ? trim((string) $database_config['ssl_ca']) : '';
+        if ($ssl_ca !== '' && !preg_match('/^(?:[A-Za-z]:[\\\\\/]|[\\\\\/])/', $ssl_ca)) {
+            $ssl_ca = ROOT_DIR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($ssl_ca, '/\\'));
+        }
         if ($driver === 'mysql' && $ssl_ca !== '' && is_readable($ssl_ca)) {
             $options[PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
             $ssl_verify = $database_config['ssl_verify'] ?? true;

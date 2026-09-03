@@ -5,6 +5,7 @@
 .env
 !.env.example
 app/certs/*.pem
+!app/certs/aiven-ca.pem
 
 # Dependencies
 vendor/
