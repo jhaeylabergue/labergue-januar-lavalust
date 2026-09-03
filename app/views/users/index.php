@@ -2,7 +2,6 @@
 /**
  * @var array  $users
  * @var string $page_title
- * @var string $active_page
  */
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
@@ -11,18 +10,28 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'Users') ?></title>
-    <?php lava_instance()->call->view('student/_styles'); ?>
+    <?php lava_instance()->call->view('users/_styles'); ?>
 </head>
 <body>
 
-<?php lava_instance()->call->view('student/_nav', ['active_page' => $active_page ?? 'users']); ?>
+<header class="users-header">
+    <div>
+        <span class="eyebrow">Administration</span>
+        <strong class="brand">User Management</strong>
+    </div>
+</header>
 
-<div class="page-wrap" style="max-width: 1080px;">
-    <h1 class="page-title">Users</h1>
-    <p class="page-subtitle">Records loaded from the MySQL <code>users</code> table through UsersModel::all()</p>
+<main class="page-wrap">
+    <div class="page-heading">
+        <div>
+            <p class="kicker">Lab 4 / Database Records</p>
+            <h1 class="page-title">Users</h1>
+            <p class="page-subtitle">A view of every record in the <code>users</code> table.</p>
+        </div>
+        <span class="record-count"><?= count($users) ?> records</span>
+    </div>
 
-    <div class="card">
-        <h2>User Management Module</h2>
+    <section class="table-panel">
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
@@ -53,8 +62,8 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

@@ -5,7 +5,5 @@
         <a href="<?= site_url('student') ?>" class="<?= ($active_page ?? '') === 'home' ? 'active' : '' ?>">Home</a>
         <span class="nav-sep">|</span>
         <a href="<?= site_url('student/profile') ?>" class="<?= ($active_page ?? '') === 'profile' ? 'active' : '' ?>">Student Profile</a>
-        <span class="nav-sep">|</span>
-        <a href="<?= site_url('users') ?>" class="<?= ($active_page ?? '') === 'users' ? 'active' : '' ?>">Users</a>
     </div>
 </nav>
