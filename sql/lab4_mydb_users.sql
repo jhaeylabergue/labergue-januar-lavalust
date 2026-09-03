@@ -11,10 +11,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 INSERT INTO users (firstname, lastname, email, username)
 VALUES
-('Juan', 'Dela Cruz', 'juan@example.com', 'juandelacruz'),
-('Maria', 'Santos', 'maria@example.com', 'mariasantos'),
-('Pedro', 'Garcia', 'pedro@example.com', 'pedrogarcia'),
-('Ana', 'Reyes', 'ana@example.com', 'anareyes'),
-('Jose', 'Mendoza', 'jose@example.com', 'josemendoza');
+('Jhaey', 'Fernandez', 'jhaey@email.com', 'jhaeyfernandez'),
+('Maria', 'Santos', 'maria@email.com', 'mariasantos'),
+('Pedro', 'Garcia', 'pedro@email.com', 'pedrogarcia'),
+('Ana', 'Reyes', 'ana@email.com', 'anareyes'),
+('Jose', 'Mendoza', 'jose@email.com', 'josemendoza');
 
 SELECT * FROM users;

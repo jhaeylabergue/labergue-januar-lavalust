@@ -44,18 +44,18 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100) NOT NULL
 )");
 
-$count = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
-if ($count < 5) {
-    $pdo->exec("INSERT INTO users (firstname, lastname, email, username) VALUES
-        ('Juan', 'Dela Cruz', 'juan@example.com', 'juandelacruz'),
-        ('Maria', 'Santos', 'maria@example.com', 'mariasantos'),
-        ('Pedro', 'Garcia', 'pedro@example.com', 'pedrogarcia'),
-        ('Ana', 'Reyes', 'ana@example.com', 'anareyes'),
-        ('Jose', 'Mendoza', 'jose@example.com', 'josemendoza')");
-    echo "Inserted sample users.\n";
-} else {
-    echo "users table already has {$count} rows.\n";
-}
+$pdo->exec("INSERT INTO users (id, firstname, lastname, email, username) VALUES
+    (1, 'Jhaey', 'Fernandez', 'jhaey@email.com', 'jhaeyfernandez'),
+    (2, 'Maria', 'Santos', 'maria@email.com', 'mariasantos'),
+    (3, 'Pedro', 'Garcia', 'pedro@email.com', 'pedrogarcia'),
+    (4, 'Ana', 'Reyes', 'ana@email.com', 'anareyes'),
+    (5, 'Jose', 'Mendoza', 'jose@email.com', 'josemendoza')
+    ON DUPLICATE KEY UPDATE
+        firstname = VALUES(firstname),
+        lastname = VALUES(lastname),
+        email = VALUES(email),
+        username = VALUES(username)");
+echo "Sample users inserted or updated.\n";
 
 $rows = $pdo->query('SELECT id, firstname, lastname, email, username FROM users')->fetchAll(PDO::FETCH_ASSOC);
 foreach ($rows as $row) {
