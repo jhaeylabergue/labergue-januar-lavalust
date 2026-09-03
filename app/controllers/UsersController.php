@@ -12,8 +12,7 @@ class UsersController extends Controller
 
         $data['users'] = $users ?: [];
         $data['page_title'] = 'User Management — Lab 4';
-        $data['active_page'] = 'users';
 
-        $this->call->view('users/index', $data);
+        $this->call->view('users/users', $data);
     }
 }
