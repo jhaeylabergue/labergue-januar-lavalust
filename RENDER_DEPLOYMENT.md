@@ -35,13 +35,13 @@ Click **"Advanced"** and add these environment variables:
 APP_ENV = production
 BASE_URL = https://your-app-name.onrender.com/
 DB_DRIVER = mysql
-DB_HOST = your-aiven-host
+DB_HOST = 137.184.81.14
 DB_PORT = 10726
-DB_DATABASE = mydb
+DB_DATABASE = defaultdb
 DB_USERNAME = avnadmin
 DB_PASSWORD = your-aiven-password
-DB_SSL_CA = app/certs/aiven-ca.pem
-DB_SSL_VERIFY = 1
+DB_SSL_CA = app/certs/ca.pem
+DB_SSL_VERIFY = 0
 ```
 
 **To find your URL after deployment:**
