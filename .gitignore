@@ -23,14 +23,4 @@ runtime/*
 *.sublime-*
 
 # OS
-Thumbs.db# Debug / proof artifacts
-inspect_*.php
-probe_*.php
-test_*.php
-verify_*.php
-localhost_*.html
-remote_*.html
-remote_*.*
-render_*.html
-cookies.txt
-Januarrr/
+Thumbs.db
