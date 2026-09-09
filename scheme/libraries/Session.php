@@ -162,11 +162,8 @@ class Session {
         // Stronger HMAC secret (fallback to a generated one if not set)
 		if (empty($this->config['session_hmac_secret']))
 		{
-			if (strtolower(config_item('environment')) === 'production')
-			{
-				throw new Exception('Session security requires an encryption key. Please set session_hmac_secret in your config file.');
-			}
-
+			// Production should not return a blank page because an APP_KEY is not provided.
+			// Generate a random session key locally instead of throwing and suppressing output.
 			$this->hmac_secret = bin2hex(random_bytes(32));
 		}
 		else
