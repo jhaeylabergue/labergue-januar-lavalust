@@ -1,0 +1,94 @@
+* { box-sizing: border-box; }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #eaf4ff;
+    background:
+        radial-gradient(circle at 72% 10%, rgba(80, 157, 255, 0.24), transparent 18%),
+        radial-gradient(circle at 20% 80%, rgba(169, 82, 255, 0.22), transparent 20%),
+        linear-gradient(135deg, #07111e, #111b2d 48%, #18172b);
+    min-height: 100vh;
+}
+body::before {
+    content: '';
+    position: fixed;
+    inset: -80px;
+    background-image: radial-gradient(#aeb7d8 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), transparent 100%);
+    transform: rotate(8deg);
+    opacity: 0.45;
+    pointer-events: none;
+}
+.login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+.login-card {
+    width: min(460px, calc(100vw - 40px));
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.24);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 0 30px rgba(255,255,255,0.05);
+}
+h1 {
+    margin: 0 0 24px;
+    font-size: 30px;
+    color: #eefaff;
+}
+label {
+    display: block;
+    font-weight: 700;
+    margin-top: 14px;
+    color: #dceaff;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.08);
+    color: #eefaff;
+    box-sizing: border-box;
+    margin-top: 6px;
+    outline: none;
+}
+input:focus {
+    border-color: rgba(160, 215, 255, 0.85);
+    box-shadow: 0 0 0 3px rgba(94, 190, 255, 0.2);
+}
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #eefaff;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+    box-shadow: 0 8px 20px rgba(59,130,246,0.28);
+}
+.btn:hover { filter: brightness(1.08); }
+.flash {
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+.flash.error {
+    background: rgba(255, 97, 97, 0.18);
+    color: #ffd7d7;
+    border: 1px solid rgba(255, 190, 190, 0.36);
+}
+.flash.success {
+    background: rgba(34, 197, 94, 0.16);
+    color: #baf7cd;
+    border: 1px solid rgba(180, 251, 206, 0.36);
+}

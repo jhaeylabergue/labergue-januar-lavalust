@@ -24,3 +24,17 @@ runtime/*
 
 # OS
 Thumbs.db
+# Debug / proof artifacts
+inspect_*.php
+probe_*.php
+test_*.php
+verify_*.php
+debug_*.php
+localhost_*.html
+local_*.html
+local_*.*
+remote_*.html
+remote_*.*
+render_*.html
+cookies.txt
+Januarrr/

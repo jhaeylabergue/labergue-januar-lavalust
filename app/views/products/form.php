@@ -16,27 +16,12 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'Product Form') ?></title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fb; color: #1f2937; }
-        .top { background: #14213d; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .top a { color: #fff; text-decoration: none; }
-        .wrap { max-width: 760px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 3px 12px rgba(0,0,0,.08); }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0 0 20px; font-size: 30px; }
-        .flash { padding: 12px; margin-bottom: 16px; border-radius: 6px; font-weight: 600; }
-        .flash.error { background: #fee2e2; color: #991b1b; }
-        label { display: block; font-weight: 700; margin-top: 14px; }
-        input, textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box; margin-top: 6px; }
-        textarea { min-height: 120px; resize: vertical; }
-        .btn { display: inline-block; padding: 10px 14px; border-radius: 6px; color: #fff; background: #2563eb; text-decoration: none; font-weight: bold; border: none; cursor: pointer; }
-        .btn-secondary { background: #475569; }
-        .form-actions { margin-top: 18px; display: flex; gap: 8px; }
-    </style>
+    <link rel="stylesheet" href="<?= base_url('public/products-form-glass.css') ?>">
 </head>
 <body>
     <div class="top">
-        <div> Product Management</div>
-        <div>
+        <div class="brand">Product Management</div>
+        <div class="userbar">
             <span><?= htmlspecialchars($username) ?></span> |
             <a href="<?= site_url('logout') ?>">Logout</a>
         </div>
