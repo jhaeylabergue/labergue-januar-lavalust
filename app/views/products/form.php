@@ -16,7 +16,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'Product Form') ?></title>
-    <link rel="stylesheet" href="<?= base_url('public/products-form-glass.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('products-form-glass.css') ?>">
 </head>
 <body>
     <div class="top">
