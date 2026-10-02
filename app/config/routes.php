@@ -61,3 +61,30 @@ $router->post('/products/edit/{id}', 'ProductController::update')->middleware('a
 $router->get('/products/delete/{id}', 'ProductController::delete')->middleware('auth')->where('id', '[0-9]+');
 
 $router->get('/users', 'UsersController::index');
+
+$router->post('/api/register', 'ApiController::register');
+$router->post('/api/login', 'ApiController::login');
+$router->post('/api/refresh', 'ApiController::refresh');
+$router->post('/api/logout', 'ApiController::logout');
+
+$router->get('/api/products', 'ApiController::products')->middleware('api_auth');
+$router->get('/api/products/{id}', 'ApiController::show_product')->where('id', '[0-9]+')->middleware('api_auth');
+$router->post('/api/products', 'ApiController::create_product')->middleware('api_auth');
+$router->put('/api/products/{id}', 'ApiController::update_product')->where('id', '[0-9]+')->middleware('api_auth');
+$router->patch('/api/products/{id}', 'ApiController::update_product')->where('id', '[0-9]+')->middleware('api_auth');
+$router->delete('/api/products/{id}', 'ApiController::delete_product')->where('id', '[0-9]+')->middleware('api_auth');
+
+$router->options('/api/register', 'ApiController::preflight');
+$router->options('/api/login', 'ApiController::preflight');
+$router->options('/api/refresh', 'ApiController::preflight');
+$router->options('/api/logout', 'ApiController::preflight');
+$router->options('/api/products', 'ApiController::preflight')->middleware('api_auth');
+$router->options('/api/products/{id}', 'ApiController::preflight')->where('id', '[0-9]+')->middleware('api_auth');
+
+$router->get('/create-migration/{migration_class}', 'MigrationController::create_migration')
+    ->where('migration_class', '[A-Za-z0-9_-]+');
+$router->get('/migrate', 'MigrationController::migrate');
+$router->get('/rollback', 'MigrationController::rollback');
+$router->get('/rollback-all', 'MigrationController::rollback_all');
+$router->get('/refresh', 'MigrationController::refresh');
+$router->get('/status', 'MigrationController::status');

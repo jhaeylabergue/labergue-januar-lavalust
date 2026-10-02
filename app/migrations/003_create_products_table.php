@@ -12,37 +12,6 @@ class Create_products_table {
 
     public function up()
     {
-        if (!$this->_lava->dbforge->table_exists('auth_users')) {
-            $this->_lava->dbforge
-                ->add_field([
-                    'id' => [
-                        'type'           => 'INT',
-                        'constraint'     => 11,
-                        'unsigned'       => TRUE,
-                        'auto_increment' => TRUE,
-                        'null'           => FALSE,
-                    ],
-                    'username' => [
-                        'type'       => 'VARCHAR',
-                        'constraint' => 100,
-                        'null'       => FALSE,
-                        'unique'     => TRUE,
-                    ],
-                    'password' => [
-                        'type'       => 'VARCHAR',
-                        'constraint' => 255,
-                        'null'       => FALSE,
-                    ],
-                    'created_at' => [
-                        'type'    => 'TIMESTAMP',
-                        'null'    => FALSE,
-                        'default' => 'CURRENT_TIMESTAMP',
-                    ],
-                ])
-                ->add_key('id', primary: TRUE)
-                ->create_table('auth_users');
-        }
-
         if ($this->_lava->dbforge->table_exists('products')) {
             return;
         }
@@ -63,7 +32,7 @@ class Create_products_table {
                 ],
                 'description' => [
                     'type' => 'TEXT',
-                    'null' => FALSE,
+                    'null' => TRUE,
                 ],
                 'price' => [
                     'type'       => 'DECIMAL',
@@ -90,6 +59,5 @@ class Create_products_table {
     public function down()
     {
         $this->_lava->dbforge->drop_table('products');
-        $this->_lava->dbforge->drop_table('auth_users');
     }
 }

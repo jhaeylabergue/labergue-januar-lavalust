@@ -33,9 +33,9 @@ class AuthController extends Controller
         $this->call->library('form_validation');
 
         $this->form_validation
-            ->name('username')
-            ->required('Username is required.')
-            ->min_length(3, 'Username must be at least 3 characters.');
+            ->name('email')
+            ->required('Email is required.')
+            ->valid_email('Enter a valid email address.');
 
         $this->form_validation
             ->name('password')
@@ -47,19 +47,13 @@ class AuthController extends Controller
             exit;
         }
 
-        $username = trim((string) $this->request->post('username', ''));
+        $email = trim((string) $this->request->post('email', ''));
         $password = (string) $this->request->post('password', '');
 
-        $user = $this->AuthModel->find_by('username', $username);
+        $user = $this->AuthModel->find_by('email', $email);
 
         if (!$user || !password_verify($password, $user['password'] ?? '')) {
             $this->session->set_flashdata('error', 'Invalid username or password.');
-            redirect('login');
-            exit;
-        }
-
-        if (($user['is_active'] ?? 1) != 1) {
-            $this->session->set_flashdata('error', 'Your account is inactive.');
             redirect('login');
             exit;
         }
@@ -68,7 +62,7 @@ class AuthController extends Controller
         $this->session->set_userdata([
             'logged_in' => true,
             'user_id'    => $user['id'],
-            'username'   => $user['username'],
+            'username'   => $user['name'],
         ]);
 
         redirect('products');

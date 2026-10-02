@@ -30,20 +30,24 @@ class Create_refresh_tokens_table {
                     'null'     => FALSE,
                 ],
                 'token' => [
-                    'type' => 'TEXT',
-                    'null' => FALSE,
+                    'type'       => 'VARCHAR',
+                    'constraint' => 64,
+                    'null'       => FALSE,
                 ],
                 'expires_at' => [
                     'type' => 'DATETIME',
                     'null' => FALSE,
                 ],
-                'jti' => [
-                    'type' => 'TEXT',
-                    'null' => FALSE,
+                'created_at' => [
+                    'type'    => 'TIMESTAMP',
+                    'null'    => FALSE,
+                    'default' => 'CURRENT_TIMESTAMP',
                 ],
             ])
             ->add_key('id', primary: TRUE)
-            ->add_key('user_id', name: 'user_id_idx')
+            ->add_key('user_id', name: 'refresh_tokens_user_id_idx')
+            ->add_key('token', unique: TRUE, name: 'refresh_tokens_token_unique')
+            ->add_foreign_key('user_id', 'users', 'id', 'CASCADE', 'CASCADE')
             ->create_table('refresh_tokens');
     }
 

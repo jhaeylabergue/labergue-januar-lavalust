@@ -37,25 +37,21 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed'); ?>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Name</th>
                         <th>Email</th>
-                        <th>Username</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($users)): ?>
                     <tr>
-                        <td colspan="5">No users found.</td>
+                        <td colspan="3">No users found.</td>
                     </tr>
                     <?php else: ?>
                     <?php foreach ($users as $user): ?>
                     <tr>
                         <td><?= htmlspecialchars((string) ($user['id'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($user['firstname'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($user['lastname'] ?? '')) ?></td>
+                        <td><?= htmlspecialchars((string) ($user['name'] ?? '')) ?></td>
                         <td><?= htmlspecialchars((string) ($user['email'] ?? '')) ?></td>
-                        <td><?= htmlspecialchars((string) ($user['username'] ?? '')) ?></td>
                     </tr>
                     <?php endforeach; ?>
                     <?php endif; ?>

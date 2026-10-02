@@ -5,6 +5,6 @@ class AuthModel extends Model
 {
     protected $table = 'users';
     protected $primary_key = 'id';
-    protected $fillable = ['username', 'password'];
+    protected $fillable = ['name', 'email', 'password'];
     protected $timestamps = false;
 }

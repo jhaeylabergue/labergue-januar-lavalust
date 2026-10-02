@@ -3,7 +3,13 @@
 
 # Environment
 .env
+.env.*
 !.env.example
+
+# Keep the public Aiven CA certificate; ignore private TLS credentials.
+/app/certs/*
+!/app/certs/.gitkeep
+!/app/certs/ca.pem
 
 # Dependencies
 vendor/

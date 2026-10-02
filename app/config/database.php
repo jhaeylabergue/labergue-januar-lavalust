@@ -57,17 +57,48 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 |   Example: $database['another_example'] = array('key' => 'value')
 */
 
+$required_database_settings = [
+    'DB_HOST',
+    'DB_PORT',
+    'DB_USERNAME',
+    'DB_PASSWORD',
+    'DB_DATABASE',
+    'DB_SSL_CA',
+];
+
+foreach ($required_database_settings as $setting) {
+    $value = getenv($setting);
+    if ($value === false || trim($value) === '') {
+        throw new RuntimeException("Required database environment variable {$setting} is missing.");
+    }
+}
+
+if (!ctype_digit((string) getenv('DB_PORT'))) {
+    throw new RuntimeException('DB_PORT must be a number.');
+}
+
+$ssl_ca = (string) getenv('DB_SSL_CA');
+$resolved_ssl_ca = $ssl_ca;
+if (!preg_match('/^(?:[A-Za-z]:[\\\\\/]|[\\\\\/])/', $ssl_ca)) {
+    $resolved_ssl_ca = ROOT_DIR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($ssl_ca, '/\\'));
+}
+if (!is_readable($resolved_ssl_ca)) {
+    throw new RuntimeException('DB_SSL_CA must point to a readable CA certificate.');
+}
+
 $database['main'] = array(
     'driver'    => getenv('DB_DRIVER') ?: 'mysql',
     'hostname'  => getenv('DB_HOST') ?: '',
     'port'      => getenv('DB_PORT') ?: '',
     'username'  => getenv('DB_USERNAME') ?: '',
     'password'  => getenv('DB_PASSWORD') ?: '',
-    'database'  => getenv('DB_DATABASE') ?: 'defaultdb',
+    'database'  => getenv('DB_DATABASE') ?: '',
     'charset'   => getenv('DB_CHARSET') ?: 'utf8mb4',
     'dbprefix'  => '',
-    'ssl_ca'    => getenv('DB_SSL_CA') ?: '',
-    'ssl_verify'=> getenv('DB_SSL_VERIFY') !== false ? getenv('DB_SSL_VERIFY') : true,
+    'ssl_ca'    => $ssl_ca,
+    'ssl_verify'=> getenv('DB_SSL_VERIFY') === false
+        ? true
+        : filter_var(getenv('DB_SSL_VERIFY'), FILTER_VALIDATE_BOOLEAN),
     // Optional for SQLite
     'path'      => getenv('DB_PATH') ?: ''
 );

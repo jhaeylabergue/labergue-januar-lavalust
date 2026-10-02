@@ -123,7 +123,7 @@ class ProductController extends Controller
             exit;
         }
 
-        $this->ProductModel->delete((int) $id);
+        $this->ProductModel->soft_delete((int) $id);
         $this->session->set_flashdata('success', 'Product deleted successfully.');
         redirect('products');
         exit;

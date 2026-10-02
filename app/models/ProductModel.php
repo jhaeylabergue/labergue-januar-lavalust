@@ -7,4 +7,5 @@ class ProductModel extends Model
     protected $primary_key = 'id';
     protected $fillable = ['product_name', 'description', 'price', 'quantity'];
     protected $timestamps = false;
+    protected $has_soft_delete = true;
 }

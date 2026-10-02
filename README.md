@@ -162,14 +162,18 @@ lavalust/
 
 ```php
 $database['main'] = array(
-    'driver'	=> '',
+    'driver'	=> getenv('DB_DRIVER') ?: 'mysql',
     'hostname'	=> getenv('DB_HOST') ?: '',
     'port'		=> getenv('DB_PORT') ?: '',
     'username'	=> getenv('DB_USERNAME') ?: '',
     'password'	=> getenv('DB_PASSWORD') ?: '',
-    'database'	=> getenv('DB_NAME') ?: '',
-    'charset'	=> '',
+    'database'	=> getenv('DB_DATABASE') ?: '',
+    'charset'	=> getenv('DB_CHARSET') ?: 'utf8mb4',
     'dbprefix'	=> '',
+    'ssl_ca'    => getenv('DB_SSL_CA') ?: '',
+    'ssl_verify'=> getenv('DB_SSL_VERIFY') === false
+        ? true
+        : filter_var(getenv('DB_SSL_VERIFY'), FILTER_VALIDATE_BOOLEAN),
     // Optional for SQLite
     'path'      => ''
 );
@@ -270,6 +274,85 @@ Please ensure your code follows the existing style conventions and includes rele
 - [ ] Enhanced error handling and debugging tools
 
 ---
+
+## Laboratory Exercise 6: Token API and Migrations
+
+The API is served by LavaLust. The separate React/Vue frontend must call this
+API over HTTP and must not connect to MySQL directly.
+
+### Environment variables
+
+Copy `.env.example` to `.env` locally, then replace its placeholders. Do not
+commit `.env` or put database credentials in the frontend.
+
+| Variable | Purpose |
+|---|---|
+| `APP_ENV` | `development` locally; use `production` on Render |
+| `APP_KEY` | Long random key for LavaLust |
+| `BASE_URL` | Local base URL or the deployed Render service URL |
+| `DB_DRIVER` | Set to `mysql` |
+| `DB_HOST`, `DB_PORT` | Aiven MySQL host and port |
+| `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Aiven database credentials |
+| `DB_CHARSET` | Usually `utf8mb4` |
+| `DB_SSL_CA` | Path to Aiven's public CA certificate, normally `app/certs/ca.pem` |
+| `DB_SSL_VERIFY` | Set to `1` to verify the database certificate |
+| `API_JWT_SECRET` | Random secret of at least 32 characters for access/refresh JWTs |
+| `API_REFRESH_TOKEN_KEY` | Separate random secret of at least 32 characters |
+| `FRONTEND_ORIGIN` | Exact frontend origin allowed by CORS, including scheme and port |
+
+Use different generated random values for `APP_KEY`, `API_JWT_SECRET`, and
+`API_REFRESH_TOKEN_KEY`. For example, generate secrets locally with
+`php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"`.
+
+### Run locally
+
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+# Edit .env with your local/development Aiven settings and generated keys.
+php lava serve
+```
+
+In a separate terminal, create/update the database tables:
+
+```sh
+php lava migration run
+```
+
+Check migration status with `php lava migration status`. To create one, use
+`php lava migration create-migration --name=create_orders_table`.
+
+Migration `rollback-all` and `refresh` delete schema/data. Use them only on a
+disposable development database, never on Aiven production.
+
+### Deploy to Render
+
+1. Create a Render Web Service from this repository and select Docker.
+2. Add the environment variables above in Render's Environment settings. Set
+   `BASE_URL` to the service URL, `APP_ENV=production`, and `FRONTEND_ORIGIN`
+   to the deployed frontend's exact origin. Do not commit or copy `.env` into
+   the image.
+3. Add the Aiven host, port, database, username, password, and certificate
+   path as Render environment values. `app/certs/ca.pem` is the public CA file
+   included in this repository; keep private keys out of the repository.
+4. After deploying, run `php lava migration run` from a Render shell when
+   applying schema changes. Do not run `rollback-all` or `refresh` against
+   production.
+
+The Docker image installs `pdo_mysql` and starts PHP's built-in web server on
+Render's `PORT` (with `10000` as a local fallback).
+
+### API routes
+
+- Public: `POST /api/register`, `POST /api/login`, `POST /api/refresh`,
+  `POST /api/logout`
+- Bearer-token protected: `GET /api/products`,
+  `GET /api/products/{id}`, `POST /api/products`,
+  `PUT/PATCH /api/products/{id}`, `DELETE /api/products/{id}`
+
+Send JSON with `Content-Type: application/json`. Product writes require
+`product_name`, a non-negative numeric `price`, and a non-negative integer
+`quantity` when creating a product. Send `Authorization: Bearer TOKEN_FROM_LOGIN`
+for product endpoints.
 
 ## License
 

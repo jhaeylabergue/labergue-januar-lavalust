@@ -28,8 +28,8 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
             <?php endif; ?>
 
             <form method="post" action="<?= site_url('login') ?>">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" autocomplete="username" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="username" required>
 
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" autocomplete="current-password" required>
