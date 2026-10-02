@@ -62,13 +62,13 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
                 <?php else: ?>
                     <?php foreach ($products as $product): ?>
                         <tr>
-                            <td><?= htmlspecialchars((string) ($product['id'] ?? '')) ?></td>
-                            <td><?= htmlspecialchars((string) ($product['product_name'] ?? '')) ?></td>
-                            <td><?= htmlspecialchars((string) ($product['description'] ?? '')) ?></td>
-                            <td><?= htmlspecialchars((string) ($product['price'] ?? '')) ?></td>
-                            <td><?= htmlspecialchars((string) ($product['quantity'] ?? '')) ?></td>
-                            <td><?= htmlspecialchars((string) ($product['created_at'] ?? '')) ?></td>
-                            <td class="actions">
+                            <td data-label="ID"><?= htmlspecialchars((string) ($product['id'] ?? '')) ?></td>
+                            <td data-label="Product Name"><?= htmlspecialchars((string) ($product['product_name'] ?? '')) ?></td>
+                            <td data-label="Description"><?= htmlspecialchars((string) ($product['description'] ?? '')) ?></td>
+                            <td data-label="Price"><?= htmlspecialchars((string) ($product['price'] ?? '')) ?></td>
+                            <td data-label="Quantity"><?= htmlspecialchars((string) ($product['quantity'] ?? '')) ?></td>
+                            <td data-label="Created At"><?= htmlspecialchars((string) ($product['created_at'] ?? '')) ?></td>
+                            <td class="actions" data-label="Actions">
                                 <a class="btn btn-secondary" href="<?= site_url('products/edit/' . (int) ($product['id'] ?? 0)) ?>">Edit</a>
                                 <a class="btn btn-danger" href="<?= site_url('products/delete/' . (int) ($product['id'] ?? 0)) ?>">Delete</a>
                             </td>
