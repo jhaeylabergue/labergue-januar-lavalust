@@ -337,6 +337,10 @@ disposable development database, never on Aiven production.
 4. After deploying, run `php lava migration run` from a Render shell when
    applying schema changes. Do not run `rollback-all` or `refresh` against
    production.
+   Migration `005_add_auth_columns_to_users` adds the `name` and `password`
+   columns required by browser and API registration, preserving existing user
+   records. Run it before using `/register` on a database created with the
+   older users schema.
 
 The Docker image installs `pdo_mysql` and starts PHP's built-in web server on
 Render's `PORT` (with `10000` as a local fallback).
