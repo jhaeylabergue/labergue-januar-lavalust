@@ -63,7 +63,6 @@ $required_database_settings = [
     'DB_USERNAME',
     'DB_PASSWORD',
     'DB_DATABASE',
-    'DB_SSL_CA',
 ];
 
 foreach ($required_database_settings as $setting) {
@@ -77,13 +76,10 @@ if (!ctype_digit((string) getenv('DB_PORT'))) {
     throw new RuntimeException('DB_PORT must be a number.');
 }
 
+// DB_SSL_CA is optional; validation is handled in Database class
 $ssl_ca = (string) getenv('DB_SSL_CA');
-$resolved_ssl_ca = $ssl_ca;
-if (!preg_match('/^(?:[A-Za-z]:[\\\\\/]|[\\\\\/])/', $ssl_ca)) {
-    $resolved_ssl_ca = ROOT_DIR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($ssl_ca, '/\\'));
-}
-if (!is_readable($resolved_ssl_ca)) {
-    throw new RuntimeException('DB_SSL_CA must point to a readable CA certificate.');
+if ($ssl_ca === '') {
+    throw new RuntimeException("Required database environment variable DB_SSL_CA is missing.");
 }
 
 $database['main'] = array(
