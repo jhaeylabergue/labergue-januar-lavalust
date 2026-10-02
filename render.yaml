@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: lavalust-product-management
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: .
+    dockerCommand: ""
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_DRIVER
+        value: mysql
+      - key: DB_CHARSET
+        value: utf8mb4
+      - key: DB_SSL_VERIFY
+        value: "1"
+      - key: DB_SSL_CA
+        value: app/certs/ca.pem
