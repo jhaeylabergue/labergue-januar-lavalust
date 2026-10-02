@@ -51,6 +51,8 @@ $router->get('/student/profile', 'StudentController::profile')->middleware('stud
 
 $router->get('/login', 'AuthController::login');
 $router->post('/login', 'AuthController::authenticate');
+$router->get('/register', 'AuthController::register');
+$router->post('/register', 'AuthController::create_account');
 $router->get('/logout', 'AuthController::logout');
 
 $router->get('/products', 'ProductController::index')->middleware('auth');

@@ -25,6 +25,59 @@ class AuthController extends Controller
         $this->call->view('auth/login', $data);
     }
 
+    public function register()
+    {
+        $this->boot();
+
+        if ($this->session->userdata('logged_in')) {
+            redirect('products');
+            exit;
+        }
+
+        $data['page_title'] = 'Create Account — Product Management';
+        $data['error'] = $this->session->flashdata('error');
+        $this->call->view('auth/register', $data);
+    }
+
+    public function create_account()
+    {
+        $this->boot();
+        $this->call->database();
+        $this->call->model('AuthModel');
+
+        $name = trim((string) $this->request->post('name', ''));
+        $email = strtolower(trim((string) $this->request->post('email', '')));
+        $password = (string) $this->request->post('password', '');
+
+        if (
+            $name === ''
+            || strlen($name) > 100
+            || !filter_var($email, FILTER_VALIDATE_EMAIL)
+            || strlen($email) > 255
+            || strlen($password) < 8
+        ) {
+            $this->session->set_flashdata('error', 'Enter a name, a valid email, and a password of at least 8 characters.');
+            redirect('register');
+            exit;
+        }
+
+        if ($this->AuthModel->find_by('email', $email)) {
+            $this->session->set_flashdata('error', 'An account with this email already exists.');
+            redirect('register');
+            exit;
+        }
+
+        $this->AuthModel->insert([
+            'name' => $name,
+            'email' => $email,
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+        ]);
+
+        $this->session->set_flashdata('success', 'Account created. You can now log in.');
+        redirect('login');
+        exit;
+    }
+
     public function authenticate()
     {
         $this->boot();
