@@ -36,7 +36,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
                 <button class="btn" type="submit">Login</button>
             </form>
-            <p><a href="<?= site_url('register') ?>">Create an account</a></p>
+            <p><a href="<?= site_url('register') ?>">Set up the admin account</a></p>
         </div>
     </div>
 </body>

@@ -9,15 +9,32 @@ class AuthController extends Controller
         $this->call->helper('url');
     }
 
+    private function admin_email(): string
+    {
+        return strtolower(trim((string) getenv('ADMIN_EMAIL')));
+    }
+
+    private function has_admin_session(): bool
+    {
+        $admin_email = $this->admin_email();
+        $session_email = strtolower(trim((string) $this->session->userdata('user_email')));
+
+        return $admin_email !== ''
+            && $session_email !== ''
+            && hash_equals($admin_email, $session_email)
+            && $this->session->userdata('logged_in');
+    }
+
     public function login()
     {
         $this->boot();
 
-        if ($this->session->userdata('logged_in')) {
+        if ($this->has_admin_session()) {
             redirect('products');
             exit;
         }
 
+        $this->session->unset_userdata(['logged_in', 'user_id', 'username', 'user_email']);
         $data['page_title'] = 'Login — Product Management';
         $data['error'] = $this->session->flashdata('error');
         $data['success'] = $this->session->flashdata('success');
@@ -29,13 +46,26 @@ class AuthController extends Controller
     {
         $this->boot();
 
-        if ($this->session->userdata('logged_in')) {
+        if ($this->has_admin_session()) {
             redirect('products');
             exit;
         }
 
-        $data['page_title'] = 'Create Account — Product Management';
+        $this->session->unset_userdata(['logged_in', 'user_id', 'username', 'user_email']);
+        $this->call->database();
+        $this->call->model('AuthModel');
+
+        $admin_email = $this->admin_email();
+        $setup_token = (string) getenv('ADMIN_SETUP_TOKEN');
+        $existing_admin = $admin_email !== ''
+            ? $this->AuthModel->find_by('email', $admin_email)
+            : null;
+
+        $data['page_title'] = 'Admin Setup — Product Management';
         $data['error'] = $this->session->flashdata('error');
+        $data['setup_available'] = filter_var($admin_email, FILTER_VALIDATE_EMAIL)
+            && $setup_token !== ''
+            && (!$existing_admin || empty($existing_admin['password']));
         $this->call->view('auth/register', $data);
     }
 
@@ -48,6 +78,9 @@ class AuthController extends Controller
         $name = trim((string) $this->request->post('name', ''));
         $email = strtolower(trim((string) $this->request->post('email', '')));
         $password = (string) $this->request->post('password', '');
+        $admin_email = $this->admin_email();
+        $setup_token = (string) getenv('ADMIN_SETUP_TOKEN');
+        $submitted_token = (string) $this->request->post('setup_token', '');
 
         if (
             $name === ''
@@ -55,25 +88,38 @@ class AuthController extends Controller
             || !filter_var($email, FILTER_VALIDATE_EMAIL)
             || strlen($email) > 255
             || strlen($password) < 8
+            || !filter_var($admin_email, FILTER_VALIDATE_EMAIL)
+            || $setup_token === ''
+            || !hash_equals($admin_email, $email)
+            || !hash_equals($setup_token, $submitted_token)
         ) {
-            $this->session->set_flashdata('error', 'Enter a name, a valid email, and a password of at least 8 characters.');
+            $this->session->set_flashdata('error', 'Admin setup is unavailable or the provided details are invalid.');
             redirect('register');
             exit;
         }
 
-        if ($this->AuthModel->find_by('email', $email)) {
-            $this->session->set_flashdata('error', 'An account with this email already exists.');
+        $existing_admin = $this->AuthModel->find_by('email', $admin_email);
+        if ($existing_admin && !empty($existing_admin['password'])) {
+            $this->session->set_flashdata('error', 'Admin setup is already complete. Please log in.');
             redirect('register');
             exit;
         }
 
-        $this->AuthModel->insert([
-            'name' => $name,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-        ]);
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        if ($existing_admin) {
+            $this->AuthModel->raw(
+                'UPDATE users SET name = ?, password = ? WHERE id = ?',
+                [$name, $password_hash, $existing_admin['id']]
+            );
+        } else {
+            $this->AuthModel->insert([
+                'name' => $name,
+                'email' => $admin_email,
+                'password' => $password_hash,
+            ]);
+        }
 
-        $this->session->set_flashdata('success', 'Account created. You can now log in.');
+        $this->session->set_flashdata('success', 'Admin account configured. You can now log in.');
         redirect('login');
         exit;
     }
@@ -102,10 +148,16 @@ class AuthController extends Controller
 
         $email = trim((string) $this->request->post('email', ''));
         $password = (string) $this->request->post('password', '');
+        $admin_email = $this->admin_email();
 
         $user = $this->AuthModel->find_by('email', $email);
 
-        if (!$user || !password_verify($password, $user['password'] ?? '')) {
+        if (
+            !$user
+            || $admin_email === ''
+            || !hash_equals($admin_email, strtolower(trim($email)))
+            || !password_verify($password, $user['password'] ?? '')
+        ) {
             $this->session->set_flashdata('error', 'Invalid username or password.');
             redirect('login');
             exit;
@@ -116,6 +168,7 @@ class AuthController extends Controller
             'logged_in' => true,
             'user_id'    => $user['id'],
             'username'   => $user['name'],
+            'user_email' => strtolower(trim($user['email'])),
         ]);
 
         redirect('products');
@@ -125,7 +178,7 @@ class AuthController extends Controller
     public function logout()
     {
         $this->boot();
-        $this->session->unset_userdata(['logged_in', 'user_id', 'username']);
+        $this->session->unset_userdata(['logged_in', 'user_id', 'username', 'user_email']);
         $this->session->sess_destroy();
         $this->call->library('session');
         $this->session->set_flashdata('success', 'You have been logged out.');

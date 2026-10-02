@@ -29,42 +29,8 @@ class ApiController extends Controller
 
     public function register(): void
     {
-        $this->boot();
-        $body = $this->jsonBody();
-
-        $name = $body['name'] ?? null;
-        $email = $body['email'] ?? null;
-        $password = $body['password'] ?? null;
-
-        if (
-            !is_string($name)
-            || trim($name) === ''
-            || strlen(trim($name)) > 100
-            || !is_string($email)
-            || !filter_var(trim($email), FILTER_VALIDATE_EMAIL)
-            || strlen(trim($email)) > 255
-            || !is_string($password)
-            || strlen($password) < 8
-        ) {
-            $this->api->respond_error('Name, a valid email, and a password of at least 8 characters are required.', 422);
-        }
-
-        $name = trim($name);
-        $email = strtolower(trim($email));
-        if ($this->AuthModel->find_by('email', $email)) {
-            $this->api->respond_error('An account with this email already exists.', 422);
-        }
-
-        $userId = $this->AuthModel->insert([
-            'name' => $name,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-        ]);
-
-        $this->api->respond([
-            'message' => 'Account created.',
-            'user' => ['id' => $userId, 'name' => $name, 'email' => $email],
-        ], 201);
+        $this->call->library('api');
+        $this->api->respond_error('Public registration is disabled.', 403);
     }
 
     public function login(): void
@@ -85,7 +51,13 @@ class ApiController extends Controller
 
         $email = strtolower(trim($email));
         $user = $this->AuthModel->find_by('email', $email);
-        if (!$user || !password_verify($password, $user['password'])) {
+        $admin_email = strtolower(trim((string) getenv('ADMIN_EMAIL')));
+        if (
+            !$user
+            || $admin_email === ''
+            || !hash_equals($admin_email, $email)
+            || !password_verify($password, $user['password'] ?? '')
+        ) {
             $this->api->respond_error('Invalid email or password.', 401);
         }
 

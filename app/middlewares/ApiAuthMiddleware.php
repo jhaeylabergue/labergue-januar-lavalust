@@ -21,6 +21,21 @@ class ApiAuthMiddleware
             $lava->api->respond_error('Unauthorized', 401);
         }
 
+        $admin_email = strtolower(trim((string) getenv('ADMIN_EMAIL')));
+        if ($admin_email === '') {
+            $lava->api->respond_error('Admin access is not configured.', 403);
+        }
+
+        $lava->call->database();
+        $lava->call->model('AuthModel');
+        $user = $lava->AuthModel->find((int) $payload['sub']);
+        if (
+            !$user
+            || !hash_equals($admin_email, strtolower(trim((string) ($user['email'] ?? ''))))
+        ) {
+            $lava->api->respond_error('Admin access required.', 403);
+        }
+
         return $next();
     }
 }

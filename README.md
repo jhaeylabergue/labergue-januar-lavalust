@@ -290,6 +290,8 @@ commit `.env` or put database credentials in the frontend.
 | `APP_ENV` | `development` locally; use `production` on Render |
 | `APP_KEY` | Long random key for LavaLust |
 | `BASE_URL` | Local base URL or the deployed Render service URL |
+| `ADMIN_EMAIL` | The only email permitted to sign in to product management |
+| `ADMIN_SETUP_TOKEN` | One-time secret required to provision the admin account |
 | `DB_DRIVER` | Set to `mysql` |
 | `DB_HOST`, `DB_PORT` | Aiven MySQL host and port |
 | `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Aiven database credentials |
@@ -301,7 +303,7 @@ commit `.env` or put database credentials in the frontend.
 | `FRONTEND_ORIGIN` | Exact frontend origin allowed by CORS, including scheme and port |
 
 Use different generated random values for `APP_KEY`, `API_JWT_SECRET`, and
-`API_REFRESH_TOKEN_KEY`. For example, generate secrets locally with
+`API_REFRESH_TOKEN_KEY`, and `ADMIN_SETUP_TOKEN`. For example, generate secrets locally with
 `php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"`.
 
 ### Run locally
@@ -341,13 +343,20 @@ disposable development database, never on Aiven production.
    columns required by browser and API registration, preserving existing user
    records. Run it before using `/register` on a database created with the
    older users schema.
+5. Set `ADMIN_EMAIL` to the sole administrator's email and set
+   `ADMIN_SETUP_TOKEN` to a long random secret. After deployment, visit
+   `/register` over HTTPS and create the admin account with that exact email
+   and token. Setup automatically closes once that account has a password;
+   remove `ADMIN_SETUP_TOKEN` from Render afterwards. Public browser and API
+   registration are disabled, and both web and API product routes require the
+   configured admin account.
 
 The Docker image installs `pdo_mysql` and starts PHP's built-in web server on
 Render's `PORT` (with `10000` as a local fallback).
 
 ### API routes
 
-- Public: `POST /api/register`, `POST /api/login`, `POST /api/refresh`,
+- Public: `POST /api/login`, `POST /api/refresh`,
   `POST /api/logout`
 - Bearer-token protected: `GET /api/products`,
   `GET /api/products/{id}`, `POST /api/products`,
