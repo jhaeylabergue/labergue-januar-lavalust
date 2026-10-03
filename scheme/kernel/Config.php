@@ -60,10 +60,19 @@ class Config {
 	{
 		$this->config = get_config();
 
-		// Set the base_url automatically if none was provided
+		// Set the base_url automatically if none was provided.
+		// Prefer the incoming request host over the server IP because Render and
+		// reverse proxies expose the public origin via HTTP_HOST rather than an
+		// internal address.
 		if (empty($this->config['base_url']))
 		{
-			if (isset($_SERVER['SERVER_ADDR']))
+			$host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? null;
+
+			if (!empty($host))
+			{
+				$base_url = (is_https() ? 'https' : 'http').'://'.$host;
+			}
+			elseif (isset($_SERVER['SERVER_ADDR']))
 			{
 				if (strpos($_SERVER['SERVER_ADDR'], ':') !== FALSE)
 				{
@@ -74,14 +83,13 @@ class Config {
 					$server_addr = $_SERVER['SERVER_ADDR'];
 				}
 
-				$base_url = (is_https() ? 'https' : 'http').'://'.$server_addr
-					.substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], basename($_SERVER['SCRIPT_FILENAME'])));
+				$base_url = (is_https() ? 'https' : 'http').'://'.$server_addr;
 			}
 			else
 			{
 				$base_url = 'http://localhost/';
 			}
-			$this->set('base_url', $base_url);
+			$this->set('base_url', rtrim($base_url, '/') . '/');
 		}
 
 	}
