@@ -44,6 +44,8 @@ DB_SSL_CA = app/certs/ca.pem
 DB_SSL_VERIFY = 1
 ```
 
+For an existing Render service, add or confirm these values under **Dashboard → your service → Environment**, using the connection details from your database provider. `DB_PASSWORD` must be the database password. The `sync: false` entries in `render.yaml` intentionally keep these values out of source control; they do not provide values automatically. Save the settings and redeploy after adding them.
+
 **To find your URL after deployment:**
 - Check the Render dashboard - it will show your app URL
 - Update `BASE_URL` with the actual URL

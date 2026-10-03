@@ -18,6 +18,16 @@ services:
         value: mysql
       - key: DB_CHARSET
         value: utf8mb4
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
       - key: DB_SSL_VERIFY
         value: "1"
       - key: DB_SSL_CA
