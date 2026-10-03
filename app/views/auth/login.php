@@ -17,7 +17,9 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 <body>
     <div class="login-shell">
         <div class="login-card">
+            <p class="eyebrow">LAVALUST / INVENTORY</p>
             <h1><?= htmlspecialchars($page_title ?? 'Login') ?></h1>
+            <p class="login-intro">Sign in to manage your product catalog.</p>
 
             <?php if (!empty($error)): ?>
                 <div class="flash error"><?= htmlspecialchars($error) ?></div>

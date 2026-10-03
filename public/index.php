@@ -1,4 +1,14 @@
 <?php
+if (PHP_SAPI === 'cli-server') {
+	$request_path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+	$public_path = realpath(__DIR__);
+	$requested_file = realpath(__DIR__ . ($request_path ?: '/'));
+
+	if ($requested_file && $public_path && is_file($requested_file) && strpos($requested_file, $public_path . DIRECTORY_SEPARATOR) === 0) {
+		return false;
+	}
+}
+
 define('PREVENT_DIRECT_ACCESS', TRUE);
 /**
  * ------------------------------------------------------------------
