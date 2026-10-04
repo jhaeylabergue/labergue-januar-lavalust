@@ -16,6 +16,27 @@ class Create_refresh_tokens_table {
             return;
         }
 
+        if (!$this->_lava->dbforge->table_exists('users')) {
+            throw new RuntimeException('Cannot create refresh_tokens because users.id does not exist.');
+        }
+
+        $user_id = $this->_lava->db->raw(
+            "SELECT DATA_TYPE, COLUMN_TYPE
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = 'users'
+               AND column_name = 'id'"
+        )->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user_id) {
+            throw new RuntimeException('Cannot create refresh_tokens because users.id does not exist.');
+        }
+
+        $user_id_type = strtoupper($user_id['DATA_TYPE']);
+        if (!in_array($user_id_type, ['TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT'], TRUE)) {
+            throw new RuntimeException('Cannot create refresh_tokens because users.id is not an integer column.');
+        }
+
         $this->_lava->dbforge
             ->add_field([
                 'id' => [
@@ -25,8 +46,8 @@ class Create_refresh_tokens_table {
                     'null'           => FALSE,
                 ],
                 'user_id' => [
-                    'type'     => 'INT',
-                    'unsigned' => TRUE,
+                    'type'     => $user_id_type,
+                    'unsigned' => stripos($user_id['COLUMN_TYPE'], 'unsigned') !== FALSE,
                     'null'     => FALSE,
                 ],
                 'token' => [

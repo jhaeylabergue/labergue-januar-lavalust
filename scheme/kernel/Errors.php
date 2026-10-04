@@ -136,6 +136,14 @@ class Errors
 	 */
 	public function show_database_error($message, $sql = '', $bindings = [], $exception = null, $template = 'error_db')
 	{
+		if (PHP_SAPI === 'cli') {
+			if ($exception instanceof Throwable) {
+				throw $exception;
+			}
+
+			throw new RuntimeException($message);
+		}
+
 		$template_path = config_item('error_view_path');
 		if (empty($template_path)) {
 			$template_path = APP_DIR . 'views/errors/';
@@ -153,7 +161,9 @@ class Errors
 		$line = $error_line;
 		$trace = $error_trace;
 
-		http_response_code(500);
+		if (PHP_SAPI !== 'cli' && !headers_sent()) {
+			http_response_code(500);
+		}
 		require_once($template_path . $template . '.php');
 		exit();
 	}

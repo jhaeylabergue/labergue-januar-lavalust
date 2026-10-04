@@ -192,15 +192,21 @@ EOT;
             $version = (int) substr(basename($file), 0, 3);
 
             if (!in_array($version, $applied)) {
-                require_once $file;
-                $class_name = $this->get_class_name_from_file($file);
+                try {
+                    require_once $file;
+                    $class_name = $this->get_class_name_from_file($file);
 
-                $migration = new $class_name();
-                $migration->up();
+                    $migration = new $class_name();
+                    $migration->up();
 
-                $this->record_migration($version);
-                $this->success("✓ Migrated: " . basename($file));
-                $migrated++;
+                    $this->record_migration($version);
+                    $this->success("✓ Migrated: " . basename($file));
+                    $migrated++;
+                } catch (Throwable $exception) {
+                    fwrite(STDERR, "Migration failed: " . basename($file) . PHP_EOL);
+                    fwrite(STDERR, "Exception: " . $exception->getMessage() . PHP_EOL);
+                    exit(1);
+                }
             }
         }
 
