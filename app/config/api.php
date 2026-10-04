@@ -96,7 +96,7 @@ $config['refresh_token_key'] = getenv('API_REFRESH_TOKEN_KEY') ?: 'development-a
 | already deployed.
 |
 */
-$config['allow_origin'] = getenv('FRONTEND_ORIGIN') ?: 'http://127.0.0.1:8000';
+$config['allow_origin'] = array_map('trim', explode(',', getenv('FRONTEND_ORIGIN') ?: 'http://localhost:5173'));
 
 /*
 |--------------------------------------------------------------------------
