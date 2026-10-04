@@ -146,7 +146,7 @@ class AuthController extends Controller
             exit;
         }
 
-        $email = trim((string) $this->request->post('email', ''));
+        $email = strtolower(trim((string) $this->request->post('email', '')));
         $password = (string) $this->request->post('password', '');
         $admin_email = $this->admin_email();
 
@@ -155,7 +155,7 @@ class AuthController extends Controller
         if (
             !$user
             || $admin_email === ''
-            || !hash_equals($admin_email, strtolower(trim($email)))
+            || !hash_equals($admin_email, $email)
             || !password_verify($password, $user['password'] ?? '')
         ) {
             $this->session->set_flashdata('error', 'Invalid username or password.');
@@ -168,7 +168,7 @@ class AuthController extends Controller
             'logged_in' => true,
             'user_id'    => $user['id'],
             'username'   => $user['name'],
-            'user_email' => strtolower(trim($user['email'])),
+            'user_email' => strtolower(trim((string) ($user['email'] ?? ''))),
         ]);
 
         redirect('products');

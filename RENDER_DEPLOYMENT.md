@@ -42,9 +42,13 @@ DB_USERNAME = avnadmin
 DB_PASSWORD = your-aiven-password
 DB_SSL_CA = app/certs/ca.pem
 DB_SSL_VERIFY = 1
+ADMIN_EMAIL = the exact email allowed to sign in (for example, jhaey@email.com)
+ADMIN_SETUP_TOKEN = a long, temporary random secret
 ```
 
 For an existing Render service, add or confirm these values under **Dashboard → your service → Environment**, using the connection details from your database provider. `DB_PASSWORD` must be the database password. The `sync: false` entries in `render.yaml` intentionally keep these values out of source control; they do not provide values automatically. Save the settings and redeploy after adding them.
+
+`ADMIN_EMAIL` must exactly match the admin account email. Login is always rejected when this variable is empty or does not match. After deployment, visit `/register` over HTTPS and enter that email, the setup token, and a new password of at least 8 characters. If the database still has the older `users` schema, run migration `005_add_auth_columns_to_users` first. Once setup succeeds, remove `ADMIN_SETUP_TOKEN` from Render; the setup page closes after an admin password has been saved.
 
 **To find your URL after deployment:**
 - Check the Render dashboard - it will show your app URL
